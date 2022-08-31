@@ -1,4 +1,3 @@
-/* See LICENSE file for copyright and license details. */
 #pragma once
 
 #include <X11/Xft/Xft.h>

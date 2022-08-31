@@ -3,18 +3,10 @@
 
 include config.mk
 
-SRC = drw.cpp dwm.cpp util.cpp
+SRC = src/drw.cpp src/dwm.cpp src/util.cpp
 OBJ = ${SRC:.cpp=.o}
 
-all: release
-
-debug: CXXFLAGS += ${DEBUG_CXXFLAGS}
-debug: LDFLAGS += ${DEBUG_LDFLAGS}
-debug: options dwm
-
-release: CXXFLAGS += ${RELEASE_CXXFLAGS}
-release: LDFLAGS += ${RELEASE_LDFLAGS}
-release: options dwm
+all: options dwm
 
 options:
 	@echo dwm build options:
@@ -25,10 +17,10 @@ options:
 .c.o:
 	${CXX} -c ${CXXFLAGS} $<
 
-${OBJ}: config.hpp config.mk
+${OBJ}: src/config.hpp config.mk
 
-config.hpp:
-	cp config.def.hpp $@
+src/config.hpp:
+	cp src/config.def.hpp $@
 
 dwm: ${OBJ}
 	${CXX} -o $@ ${OBJ} ${LDFLAGS}
@@ -38,8 +30,8 @@ clean:
 
 dist: clean
 	mkdir -p dwm-${VERSION}
-	cp -R LICENSE Makefile README config.def.hpp config.mk\
-		dwm.1 drw.hpp util.hpp ${SRC} dwm.png transient.cpp dwm-${VERSION}
+	cp -R LICENSE Makefile README src/config.def.hpp config.mk\
+		dwm.1 src/drw.hpp src/util.hpp ${SRC} dwm.png src/transient.cpp dwm-${VERSION}
 	tar -cf dwm-${VERSION}.tar dwm-${VERSION}
 	gzip dwm-${VERSION}.tar
 	rm -rf dwm-${VERSION}
