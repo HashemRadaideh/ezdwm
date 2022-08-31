@@ -1,5 +1,4 @@
-# dwm version
-VERSION = 0.6.2
+VERSION = 0.0.1
 
 # Customize below to fit your system
 
@@ -25,12 +24,6 @@ LIBS = -lstdc++ -L${X11LIB} -lX11 ${XINERAMALIBS} ${FREETYPELIBS}
 # flags
 CXXFLAGS = -std=c++20 -Wpedantic -Wall -Wextra -Wno-deprecated-declarations ${INCS} -D_DEFAULT_SOURCE -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS}
 LDFLAGS  = ${LIBS}
-
-DEBUG_CXXFLAGS = -fsanitize=address,undefined -g -Og
-DEBUG_LDFLAGS = -fsanitize=address,undefined
-
-RELEASE_CXXFLAGS = -O3
-RELEASE_LDFLAGS = 
 
 # compiler and linker
 CXX = c++

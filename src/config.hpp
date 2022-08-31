@@ -66,7 +66,7 @@ const std::array<Layout, 3> layouts = {{
       {MODKEY | ShiftMask, KEY, [] { tag(1 << TAG); }},          \
       {MODKEY | ControlMask | ShiftMask, KEY, [] { toggletag(1 << TAG); }},
 
-/* helper for spawning shell commands in the pre dwm-5.0 fashion */
+/* helper for spawning shell commands */
 #define SHCMD(cmd)                                      \
   {                                                     \
     .v = (const char*[]) { "/bin/sh", "-c", cmd, NULL } \
@@ -80,7 +80,7 @@ Command dmenurun = {"dmenu_run", "-m",      spawnCommandMonitorID,
                     col_gray1,   "-nf",     col_gray3,
                     "-sb",       col_cyan,  "-sf",
                     col_gray4};
-Command terminal = {"st"};
+Command terminal = {"kitty"};
 
 void autostart() { spawn(terminal); }
 

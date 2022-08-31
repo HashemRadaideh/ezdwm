@@ -91,7 +91,7 @@ std::string_view cropTextToExtent(const DisplayFont& renderingFont,
                                   const std::string_view text,
                                   const size_t targetExtent) {
   // TODO: I think this is a bug, I've copied the behaviour from the original
-  // dwm for now what happens if the last char in 'text' is utf8 encoded?
+  // for now what happens if the last char in 'text' is utf8 encoded?
   for (auto view = text; !view.empty(); view.remove_suffix(1)) {
     if (renderingFont.getTextExtent(view) <= targetExtent) {
       return view;

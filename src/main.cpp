@@ -1,12 +1,11 @@
-/* See LICENSE file for copyright and license details.
- *
+/*
  * dynamic window manager is designed like any other X client as well. It is
  * driven through handling X events. In contrast to other X clients, a window
  * manager selects for SubstructureRedirectMask on the root window, to receive
  * events about window (dis-)appearance. Only one X connection at a time is
  * allowed to select for this event mask.
  *
- * The event handlers of dwm are organized in an array which is accessed
+ * The event handlers are organized in an array which is accessed
  * whenever a new event has been fetched. This allows event dispatching
  * in O(1) time.
  *
@@ -282,7 +281,7 @@ void view(const uint tag);
 void zoom();
 
 /* variables */
-char dwmClassHint[] = {'d', 'w', 'm', '+', '+', '\0'};
+char xClassHint[] = {'u', 'l', 't', 'r', 'a', '\0'};
 const char broken[] = "broken";
 char stext[256];
 int screen;
@@ -323,7 +322,7 @@ int xerror(Display* dpy, XErrorEvent* ee) {
       (ee->request_code == X_GrabKey && ee->error_code == BadAccess) ||
       (ee->request_code == X_CopyArea && ee->error_code == BadDrawable))
     return 0;
-  fprintf(stderr, "dwm++: fatal error: request code=%d, error code=%d\n",
+  fprintf(stderr, "ultra: fatal error: request code=%d, error code=%d\n",
           ee->request_code, ee->error_code);
   return xerrorxlib(dpy, ee); /* may call exit */
 }
@@ -331,7 +330,7 @@ int xerror(Display* dpy, XErrorEvent* ee) {
 int xerrordummy(Display*, XErrorEvent*) { return 0; }
 
 int xerrorstart(Display*, XErrorEvent*) {
-  die("dwm++: another window manager is already running");
+  die("ultra: another window manager is already running");
   return -1;
 }
 
@@ -563,8 +562,8 @@ void updateBarsXWindows() {
   wa.override_redirect = True;
 
   XClassHint* hint = XAllocClassHint();
-  hint->res_class = dwmClassHint;
-  hint->res_name = dwmClassHint;
+  hint->res_class = xClassHint;
+  hint->res_name = xClassHint;
 
   for (auto& monitor : allMonitors) {
     if (monitor->fBarID) continue;
@@ -625,7 +624,7 @@ void drawbars() {
 
 void updateStatusBarMessage() {
   if (!getXTextProperties(root, XA_WM_NAME, stext, sizeof(stext)))
-    strcpy(stext, "dwm++-" VERSION);
+    strcpy(stext, "ultra++-" VERSION);
   selmon->drawbar();
 }
 
@@ -1272,7 +1271,7 @@ Monitor::Monitor(int num)
 }
 
 Monitor::~Monitor() {
-  // TODO: improve this performance hack from original dwm
+  // TODO: improve this performance hack
   Layout emptyLayout = {"", nullptr};
   fLayouts[fSelectedTags] = &emptyLayout;
   while (!fStack.empty()) {
@@ -1914,7 +1913,7 @@ void spawn(CommandPtr command) {
     if (dpy) close(ConnectionNumber(dpy));
     setsid();
     execvp(command.data[0], const_cast<char* const*>(command.data));
-    fprintf(stderr, "dwm++: execvp %s", command.data[0]);
+    fprintf(stderr, "ultra: execvp %s", command.data[0]);
     perror(" failed");
     exit(EXIT_SUCCESS);
   }
@@ -2044,7 +2043,7 @@ void setup() {
   /* supporting window for NetWMCheck */
   wmcheckwin = XCreateSimpleWindow(dpy, root, 0, 0, 1, 1, 0, 0, 0);
   MutableXProperty<XA_WINDOW>{wmcheckwin, wmCheck}.overwrite({wmcheckwin});
-  MutableTextXProperty{wmcheckwin, netatom->wmName}.overwrite(dwmClassHint);
+  MutableTextXProperty{wmcheckwin, netatom->wmName}.overwrite(xClassHint);
   MutableXProperty<XA_WINDOW>{root, wmCheck}.overwrite({wmcheckwin});
 
   netatom->clientList.erase();
@@ -2105,14 +2104,14 @@ void cleanup() {
 }
 }  // namespace
 
-int main(int argc, char* argv[]) {
+auto main(int argc, char* argv[]) -> int {
   if (argc == 2 && !strcmp("-v", argv[1]))
-    die("dwm++-" VERSION);
+    die("ultra-" VERSION);
   else if (argc != 1)
-    die("usage: dwm [-v]");
+    die("usage: ultra [-v]");
   if (!setlocale(LC_CTYPE, "") || !XSupportsLocale())
     fputs("warning: no locale support\n", stderr);
-  if (!(dpy = XOpenDisplay(NULL))) die("dwm++: cannot open display");
+  if (!(dpy = XOpenDisplay(NULL))) die("ultra: cannot open display");
   checkotherwm();
   setup();
   scanAndManageOpenClients();
