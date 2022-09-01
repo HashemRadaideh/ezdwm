@@ -322,7 +322,7 @@ int xerror(Display* dpy, XErrorEvent* ee) {
       (ee->request_code == X_GrabKey && ee->error_code == BadAccess) ||
       (ee->request_code == X_CopyArea && ee->error_code == BadDrawable))
     return 0;
-  fprintf(stderr, "ultra: fatal error: request code=%d, error code=%d\n",
+  fprintf(stderr, "ezdwm: fatal error: request code=%d, error code=%d\n",
           ee->request_code, ee->error_code);
   return xerrorxlib(dpy, ee); /* may call exit */
 }
@@ -330,7 +330,7 @@ int xerror(Display* dpy, XErrorEvent* ee) {
 int xerrordummy(Display*, XErrorEvent*) { return 0; }
 
 int xerrorstart(Display*, XErrorEvent*) {
-  die("ultra: another window manager is already running");
+  die("ezdwm: another window manager is already running");
   return -1;
 }
 
@@ -624,7 +624,7 @@ void drawbars() {
 
 void updateStatusBarMessage() {
   if (!getXTextProperties(root, XA_WM_NAME, stext, sizeof(stext)))
-    strcpy(stext, "ultra++-" VERSION);
+    strcpy(stext, "ezdwm-" VERSION);
   selmon->drawbar();
 }
 
@@ -1913,7 +1913,7 @@ void spawn(CommandPtr command) {
     if (dpy) close(ConnectionNumber(dpy));
     setsid();
     execvp(command.data[0], const_cast<char* const*>(command.data));
-    fprintf(stderr, "ultra: execvp %s", command.data[0]);
+    fprintf(stderr, "ezdwm: execvp %s", command.data[0]);
     perror(" failed");
     exit(EXIT_SUCCESS);
   }
@@ -2106,12 +2106,12 @@ void cleanup() {
 
 auto main(int argc, char* argv[]) -> int {
   if (argc == 2 && !strcmp("-v", argv[1]))
-    die("ultra-" VERSION);
+    die("ezdwm-" VERSION);
   else if (argc != 1)
-    die("usage: ultra [-v]");
+    die("usage: ezdwm [-v]");
   if (!setlocale(LC_CTYPE, "") || !XSupportsLocale())
     fputs("warning: no locale support\n", stderr);
-  if (!(dpy = XOpenDisplay(NULL))) die("ultra: cannot open display");
+  if (!(dpy = XOpenDisplay(NULL))) die("ezdwm: cannot open display");
   checkotherwm();
   setup();
   scanAndManageOpenClients();

@@ -75,26 +75,26 @@ const std::array<Layout, 3> layouts = {{
   }
 
 /* commands */
-char spawnCommandMonitorID[2] = {
-    '0', '\0'}; /* component of dmenurun, manipulated in spawn() */
+char spawnCommandMonitorID[2] = {'0', '\0'};
+/* component of dmenurun, manipulated in spawn() */
 Command dmenurun = {"dmenu_run", "-m",      spawnCommandMonitorID,
                     "-fn",       dmenufont, "-nb",
                     col_gray1,   "-nf",     col_gray3,
                     "-sb",       col_cyan,  "-sf",
                     col_gray4};
-Command terminal = {"st"};
+Command terminal = {"kitty"};
 
 void autostart() { spawn(terminal); }
 
 Key keys[] = {
     /* modifier                     key        function  */
-    {MODKEY, XK_p, [] { spawn(dmenurun); }},
+    {MODKEY, XK_d, [] { spawn(dmenurun); }},
     {MODKEY | ShiftMask, XK_Return, [] { spawn(terminal); }},
     {MODKEY, XK_b, togglebar},
     {MODKEY, XK_j, [] { focusstack(+1); }},
     {MODKEY, XK_k, [] { focusstack(-1); }},
     {MODKEY, XK_i, [] { incnmaster(+1); }},
-    {MODKEY, XK_d, [] { incnmaster(-1); }},
+    {MODKEY, XK_p, [] { incnmaster(-1); }},
     {MODKEY, XK_h, [] { setmfact(-0.05f); }},
     {MODKEY, XK_l, [] { setmfact(+0.05f); }},
     {MODKEY, XK_Return, zoom},
