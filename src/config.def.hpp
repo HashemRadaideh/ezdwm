@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "drw.hpp"
+
 /* appearance */
 const unsigned int borderpx = 1; /* border pixel of windows */
 const unsigned int gappx = 5;    /* gaps between windows */

@@ -20,10 +20,11 @@ src/config.hpp:
 	cp src/config.def.hpp $@
 
 ezdwm: ${OBJ}
-	${CXX} -o $@ ${OBJ} ${LDFLAGS}
+	mkdir	-p bin
+	${CXX} -o bin/$@ ${OBJ} ${LDFLAGS}
 
 clean:
-	rm -f ezdwm ${OBJ} ezdwm-${VERSION}.tar.gz
+	rm -f bin/ezdwm ${OBJ} ezdwm-${VERSION}.tar.gz
 
 dist: clean
 	mkdir -p ezdwm-${VERSION}/src
@@ -35,7 +36,7 @@ dist: clean
 
 install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
-	cp -f ezdwm ${DESTDIR}${PREFIX}/bin
+	cp -f bin/ezdwm ${DESTDIR}${PREFIX}/bin
 	chmod 755 ${DESTDIR}${PREFIX}/bin/ezdwm
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	sed "s/VERSION/${VERSION}/g" < ezdwm.1 > ${DESTDIR}${MANPREFIX}/man1/ezdwm.1

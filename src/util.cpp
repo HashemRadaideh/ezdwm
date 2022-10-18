@@ -1,4 +1,3 @@
-/* See LICENSE file for copyright and license details. */
 #include "util.hpp"
 
 #include <stdarg.h>
