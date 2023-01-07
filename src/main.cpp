@@ -20,6 +20,7 @@
  * To understand everything else, start reading main().
  */
 
+#include <X11/XKBlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
@@ -1759,7 +1760,7 @@ void expose(XEvent* e) {
 void keypress(XEvent* e) {
   XKeyEvent* ev;
   ev = &e->xkey;
-  const auto keysym = XKeycodeToKeysym(dpy, (KeyCode)ev->keycode, 0);
+  const auto keysym = XkbKeycodeToKeysym(dpy, (KeyCode)ev->keycode, 0, 0);
   for (const auto& key : keys) {
     if (keysym == key.keysym && CLEANMASK(key.mod) == CLEANMASK(ev->state)) {
       key.func();
