@@ -2116,6 +2116,7 @@ auto main(int argc, char* argv[]) -> int {
   checkotherwm();
   setup();
   scanAndManageOpenClients();
+  system("autostart");
   run();
   cleanup();
   XCloseDisplay(dpy);
