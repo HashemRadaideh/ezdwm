@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25.0)
+cmake_minimum_required(VERSION 3.25.1)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,13 +10,15 @@ set(CMAKE_BINARY_DIR build)
 set(CMAKE_SOURCE_DIR src)
 
 set(NAME ezdwm)
-set(VER 0.0.1)
-project(${NAME} VERSION ${VER})
-add_definitions(-DVERSION=\"${VER}\")
+set(VERSION 0.0.1)
+
+project(${NAME} VERSION ${VERSION})
+
+add_definitions(-DVERSION=\"${VERSION}\")
 add_definitions(-DXINERAMA)
+add_definitions(-D_DEFAULT_SOURCE)
 
-file(GLOB_RECURSE SRC_FILES src/*.cpp src/*.cc)
-
+file(GLOB_RECURSE SRC_FILES src/*.cpp)
 add_executable(${NAME} ${SRC_FILES})
 
 target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
