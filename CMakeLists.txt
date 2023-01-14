@@ -13,6 +13,7 @@ set(NAME ezdwm)
 set(VER 0.0.1)
 project(${NAME} VERSION ${VER})
 add_definitions(-DVERSION=\"${VER}\")
+add_definitions(-DXINERAMA)
 
 file(GLOB_RECURSE SRC_FILES src/*.cpp src/*.cc)
 

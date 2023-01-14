@@ -5,7 +5,7 @@ PREFIX = /usr/local
 MANPREFIX = ${PREFIX}/share/man
 
 X11INC = /usr/X11R6/include
-X11LIB = /usr/X11R6/lib
+X11LIB = -lX11
 
 # Xinerama, comment if you don't want it
 XINERAMAFLAGS = -DXINERAMA
@@ -17,41 +17,49 @@ FREETYPELIBS = -lfontconfig -lXft
 
 # includes and libs
 INCS = -Iinc/ -I${X11INC} -I${FREETYPEINC}
-LIBS = -lstdc++ -L${X11LIB} -lX11 ${XINERAMALIBS} ${FREETYPELIBS}
 
 # flags
-CXXFLAGS = -std=c++20 -Wpedantic -Wall -Wextra -Wno-deprecated-declarations ${INCS} -D_DEFAULT_SOURCE -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS}
-LDFLAGS  = ${LIBS}
+WARNINGS = -Wpedantic -Wall -Wextra -Wno-deprecated-declarations 
+CXXFLAGS = -std=c++20 ${INCS} -D_DEFAULT_SOURCE -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS}
+LDFLAGS  = -lstdc++ ${X11LIB} ${XINERAMALIBS} ${FREETYPELIBS}
 
 # compiler and linker
 CXX = c++
 
-SRC = src/drw.cpp src/main.cpp src/util.cpp
+SRC = $(wildcard src/*.cpp)
 OBJ = ${SRC:.cpp=.o}
+BIN = $(wildcard build/*.o)
 
 all: options ezdwm
 
 options:
+	@mkdir -p build
 	@echo build options:
 	@echo "CXXFLAGS = ${CXXFLAGS}"
 	@echo "LDFLAGS  = ${LDFLAGS}"
 	@echo "CXX      = ${CXX}"
 
-.c.o:
-	${CXX} -c ${CXXFLAGS} $<
+.cpp.o:
+	${CXX} -o build/$(@F) -c ${CXXFLAGS} $<
+	# @echo "${CXX} -o build/$(@F) -c ${CXXFLAGS} $<"
 
 ezdwm: ${OBJ}
-	mkdir	-p build
-	${CXX} -o build/$@ ${OBJ} ${LDFLAGS}
-	rm -f ${OBJ}
+	${CXX} -o build/$(@F) ${BIN} ${LDFLAGS}
+	# @echo "${CXX} -o build/$(@F) ${BIN} ${LDFLAGS}"
+	# make | grep -wE 'c\+\+' | grep -w '\-c'  | sed 's|cd.*.\&\&||g' | jq -nR '[inputs|{directory:".", command:., file: match(" [^ ]+$").string[1:]}]' > build/compile_commands.json
 
 clean:
-	rm -f build/ezdwm ${OBJ} ezdwm-${VERSION}.tar.gz
+	rm -f build
+	rm -f ezdwm-${VERSION}.tar.gz
 
 dist: clean
 	mkdir -p ezdwm-${VERSION}/src
-	cp -R Makefile ezdwm.1 ezdwm-${VERSION}
-	cp -R inc/config.hpp  inc/drw.hpp inc/util.hpp inc/x.hpp ${SRC} ezdwm-${VERSION}/src
+	cp -R .gitignore ezdwm-${VERSION}
+	cp -R CMakeLists.txt ezdwm-${VERSION}
+	cp -R Makefile ezdwm-${VERSION}
+	cp -R doc ezdwm-${VERSION}
+	cp -R inc ezdwm-${VERSION}
+	cp -R src ezdwm-${VERSION}
 	tar -cf ezdwm-${VERSION}.tar ezdwm-${VERSION}
 	gzip ezdwm-${VERSION}.tar
 	rm -rf ezdwm-${VERSION}
@@ -65,6 +73,7 @@ install: all
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/ezdwm.1
 
 uninstall:
-	rm -f ${DESTDIR}${PREFIX}/bin/ezdwm ${DESTDIR}${MANPREFIX}/man1/ezdwm.1
+	rm -f ${DESTDIR}${PREFIX}/bin/ezdwm
+	rm -f ${DESTDIR}${MANPREFIX}/man1/ezdwm.1
 
-.PHONY: all options clean dist install uninstall
+.PHONY: all options .cpp.o ezdwm clean dist install uninstall
