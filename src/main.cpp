@@ -2112,7 +2112,7 @@ auto main(int argc, char* argv[]) -> int {
     die("usage: ezdwm [-v]");
   if (!setlocale(LC_CTYPE, "") || !XSupportsLocale())
     fputs("warning: no locale support\n", stderr);
-  if (!(dpy = XOpenDisplay(NULL))) die("ezdwm: cannot open display");
+  if (!(dpy = XOpenDisplay(NULL))) die("ezdwm: cannot open display right neow");
   checkotherwm();
   setup();
   scanAndManageOpenClients();
