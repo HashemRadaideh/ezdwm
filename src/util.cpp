@@ -7,14 +7,14 @@
 
 #include <algorithm>
 
-int Rect::getIntersection(const Rect& other) const {
+int Rect::getIntersection(const Rect &other) const {
   return std::max(0, std::min(x + width, other.x + other.width) -
                          std::max(x, other.x)) *
          std::max(0, std::min(y + height, other.y + other.height) -
                          std::max(y, other.y));
 }
 
-void die(const char* fmt, ...) {
+void die(const char *fmt, ...) {
   va_list ap;
 
   va_start(ap, fmt);

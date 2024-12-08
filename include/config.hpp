@@ -71,9 +71,9 @@ const std::array<Layout, 3> layouts = {{
       {MODKEY | ControlMask | ShiftMask, KEY, [] { toggletag(1 << TAG); }},
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
-#define SHCMD(cmd)                                      \
-  {                                                     \
-    .v = (const char*[]) { "/bin/sh", "-c", cmd, NULL } \
+#define SHCMD(cmd)                                       \
+  {                                                      \
+    .v = (const char *[]) { "/bin/sh", "-c", cmd, NULL } \
   }
 
 /* commands */

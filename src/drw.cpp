@@ -21,22 +21,21 @@ const unsigned char utfmask[UTF_SIZ + 1] = {0xC0, 0x80, 0xE0, 0xF0, 0xF8};
 const long utfmin[UTF_SIZ + 1] = {0, 0, 0x80, 0x800, 0x10000};
 const long utfmax[UTF_SIZ + 1] = {0x10FFFF, 0x7F, 0x7FF, 0xFFFF, 0x10FFFF};
 
-long utf8decodebyte(const char c, size_t* i) {
+long utf8decodebyte(const char c, size_t *i) {
   for (*i = 0; *i < (UTF_SIZ + 1); ++(*i))
     if (((unsigned char)c & utfmask[*i]) == utfbyte[*i])
       return (unsigned char)c & ~utfmask[*i];
   return 0;
 }
 
-size_t utf8validate(long* u, size_t i) {
+size_t utf8validate(long *u, size_t i) {
   if (!BETWEEN(*u, utfmin[i], utfmax[i]) || BETWEEN(*u, 0xD800, 0xDFFF))
     *u = UTF_INVALID;
-  for (i = 1; *u > utfmax[i]; ++i)
-    ;
+  for (i = 1; *u > utfmax[i]; ++i);
   return i;
 }
 
-size_t utf8decode(const char* c, long* u, size_t clen) {
+size_t utf8decode(const char *c, long *u, size_t clen) {
   size_t i, j, len, type;
   long udecoded;
 
@@ -55,9 +54,9 @@ size_t utf8decode(const char* c, long* u, size_t clen) {
   return len;
 }
 
-const DisplayFont* getFirstFontWithSymbol(
-    const std::vector<DisplayFont>& fFonts, const long utf8Codepoint) {
-  for (const auto& font : fFonts) {
+const DisplayFont *getFirstFontWithSymbol(
+    const std::vector<DisplayFont> &fFonts, const long utf8Codepoint) {
+  for (const auto &font : fFonts) {
     if (font.doesCodepointExistInFont(utf8Codepoint)) {
       return &font;
     }
@@ -66,7 +65,7 @@ const DisplayFont* getFirstFontWithSymbol(
 }
 
 std::string_view getContiguousCharactersWithRenderer(
-    const DisplayFont* renderingFont, const std::vector<DisplayFont>& fonts,
+    const DisplayFont *renderingFont, const std::vector<DisplayFont> &fonts,
     const std::string_view text) {
   size_t utf8StringLength = 0;
   while (utf8StringLength < text.size()) {
@@ -86,7 +85,7 @@ std::string_view getContiguousCharactersWithRenderer(
   return text.substr(0, utf8StringLength);
 }
 
-std::string_view cropTextToExtent(const DisplayFont& renderingFont,
+std::string_view cropTextToExtent(const DisplayFont &renderingFont,
                                   const std::string_view text,
                                   const size_t targetExtent) {
   // TODO: I think this is a bug, I've copied the behaviour from the
@@ -102,10 +101,10 @@ std::string_view cropTextToExtent(const DisplayFont& renderingFont,
 
 }  // namespace
 
-CursorFont::CursorFont(Display* display, int shape)
+CursorFont::CursorFont(Display *display, int shape)
     : fDisplay{display}, fCursor{XCreateFontCursor(display, shape)} {}
 
-CursorFont::CursorFont(CursorFont&& other) : fDisplay{other.fDisplay} {
+CursorFont::CursorFont(CursorFont &&other) : fDisplay{other.fDisplay} {
   fCursor.swap(other.fCursor);
 }
 
@@ -117,8 +116,8 @@ CursorFont::~CursorFont() {
 
 Cursor CursorFont::getXCursor() const { return *fCursor; }
 
-XColorScheme::XColorScheme(Display* display, const int screen,
-                           const ColorScheme& scheme) {
+XColorScheme::XColorScheme(Display *display, const int screen,
+                           const ColorScheme &scheme) {
   const auto defaultVisual = DefaultVisual(display, screen);
   const auto defaultColormap = DefaultColormap(display, screen);
 
@@ -147,7 +146,7 @@ void DisplayFont::dieIfFontIsColored() const {
   }
 }
 
-DisplayFont::DisplayFont(Display* display, FcPattern* pattern)
+DisplayFont::DisplayFont(Display *display, FcPattern *pattern)
     : fDisplay{display},
       fXfont{XftFontOpenPattern(display, pattern)},
       fPattern{nullptr} {
@@ -156,11 +155,11 @@ DisplayFont::DisplayFont(Display* display, FcPattern* pattern)
   dieIfFontIsColored();
 }
 
-DisplayFont::DisplayFont(Display* display, const int screen,
-                         const char* fontname)
+DisplayFont::DisplayFont(Display *display, const int screen,
+                         const char *fontname)
     : fDisplay{display},
       fXfont{XftFontOpenName(display, screen, fontname)},
-      fPattern{FcNameParse((FcChar8*)fontname)} {
+      fPattern{FcNameParse((FcChar8 *)fontname)} {
   /* Using the pattern found at font->xfont->pattern does not yield the
    * same substitution results as using the pattern returned by
    * FcNameParse; using the latter results in the desired fallback
@@ -172,7 +171,7 @@ DisplayFont::DisplayFont(Display* display, const int screen,
   dieIfFontIsColored();
 }
 
-DisplayFont::DisplayFont(DisplayFont&& other)
+DisplayFont::DisplayFont(DisplayFont &&other)
     : fDisplay{other.fDisplay}, fXfont{other.fXfont}, fPattern{other.fPattern} {
   other.fPattern = nullptr;
   other.fXfont = nullptr;
@@ -193,13 +192,13 @@ bool DisplayFont::doesCodepointExistInFont(long utf8Codepoint) const {
 
 std::optional<DisplayFont> DisplayFont::generateDerivedFontWithCodepoint(
     const int screen, const long utf8Codepoint) const {
-  auto* fcCharSet = FcCharSetCreate();
+  auto *fcCharSet = FcCharSetCreate();
   FcCharSetAddChar(fcCharSet, utf8Codepoint);
 
   if (!fPattern)
     die("First font in the cache must be loaded from a font string.");
 
-  auto* fcPattern = FcPatternDuplicate(fPattern);
+  auto *fcPattern = FcPatternDuplicate(fPattern);
   FcPatternAddCharSet(fcPattern, FC_CHARSET, fcCharSet);
   FcPatternAddBool(fcPattern, FC_SCALABLE, FcTrue);
   FcPatternAddBool(fcPattern, FC_COLOR, FcFalse);
@@ -208,7 +207,7 @@ std::optional<DisplayFont> DisplayFont::generateDerivedFontWithCodepoint(
   FcDefaultSubstitute(fcPattern);
 
   XftResult result;
-  auto* match = XftFontMatch(fDisplay, screen, fcPattern, &result);
+  auto *match = XftFontMatch(fDisplay, screen, fcPattern, &result);
 
   FcCharSetDestroy(fcCharSet);
   FcPatternDestroy(fcPattern);
@@ -226,19 +225,19 @@ std::optional<DisplayFont> DisplayFont::generateDerivedFontWithCodepoint(
 
 uint DisplayFont::getHeight() const { return fXfont->ascent + fXfont->descent; }
 
-XftFont* DisplayFont::getXFont() const { return fXfont; };
+XftFont *DisplayFont::getXFont() const { return fXfont; };
 
 uint DisplayFont::getTextExtent(const std::string_view text) const {
   if (text.empty()) return 0;
 
   XGlyphInfo extent;
-  XftTextExtentsUtf8(fDisplay, fXfont, (XftChar8*)text.data(), text.size(),
+  XftTextExtentsUtf8(fDisplay, fXfont, (XftChar8 *)text.data(), text.size(),
                      &extent);
 
   return extent.xOff;
 }
 
-Drw::Drw(Display* display, int screen, Window root, uint w, uint h)
+Drw::Drw(Display *display, int screen, Window root, uint w, uint h)
     : fWidth{w},
       fHeight{h},
       fDisplay{display},
@@ -266,15 +265,15 @@ void Drw::resize(const uint w, const uint h) {
                             DefaultDepth(fDisplay, fScreen));
 }
 
-const std::vector<DisplayFont>& Drw::createFontSet(
-    const std::vector<std::string>& fontNames) {
-  for (const auto& fontName : fontNames) {
+const std::vector<DisplayFont> &Drw::createFontSet(
+    const std::vector<std::string> &fontNames) {
+  for (const auto &fontName : fontNames) {
     fFonts.emplace_back(fDisplay, fScreen, fontName.data());
   }
   return fFonts;
 }
 
-Theme<XColorScheme> Drw::parseTheme(const Theme<ColorScheme>& scheme) const {
+Theme<XColorScheme> Drw::parseTheme(const Theme<ColorScheme> &scheme) const {
   return {
       .normal = {fDisplay, fScreen, scheme.normal},
       .selected = {fDisplay, fScreen, scheme.selected},
@@ -283,9 +282,9 @@ Theme<XColorScheme> Drw::parseTheme(const Theme<ColorScheme>& scheme) const {
 
 uint Drw::getPrimaryFontHeight() const { return fFonts.at(0).getHeight(); }
 
-const std::vector<DisplayFont>& Drw::getFontset() const { return fFonts; }
+const std::vector<DisplayFont> &Drw::getFontset() const { return fFonts; }
 
-void Drw::setScheme(const XColorScheme& scheme) { fScheme = scheme; }
+void Drw::setScheme(const XColorScheme &scheme) { fScheme = scheme; }
 
 void Drw::renderRect(const int x, const int y, const uint w, const uint h,
                      const bool filled, const bool invert) const {
@@ -309,7 +308,7 @@ int Drw::renderText(int x, const int y, uint w, uint h, const uint lpad,
     return 0;
   }
 
-  XftDraw* xftDrawer = nullptr;
+  XftDraw *xftDrawer = nullptr;
   if (shouldRender) {
     XSetForeground(
         fDisplay, fGC,
@@ -328,7 +327,7 @@ int Drw::renderText(int x, const int y, uint w, uint h, const uint lpad,
     long utf8Codepoint;
     utf8decode(text.data(), &utf8Codepoint, UTF_SIZ);
 
-    const auto* renderingFont = getFirstFontWithSymbol(fFonts, utf8Codepoint);
+    const auto *renderingFont = getFirstFontWithSymbol(fFonts, utf8Codepoint);
 
     if (!renderingFont) {
       // Make a new font to render this character
@@ -358,7 +357,7 @@ int Drw::renderText(int x, const int y, uint w, uint h, const uint lpad,
         XftDrawStringUtf8(
             xftDrawer, invert ? &fScheme->background : &fScheme->foreground,
             renderingFont->getXFont(), x, ty,
-            (XftChar8*)croppedTextToRender.data(), croppedTextToRender.size());
+            (XftChar8 *)croppedTextToRender.data(), croppedTextToRender.size());
       }
 
       const auto finalExtent =

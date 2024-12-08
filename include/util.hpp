@@ -8,11 +8,11 @@
 struct Rect {
   int x = 0, y = 0, width = 0, height = 0;
 
-  int getIntersection(const Rect& other) const;
+  int getIntersection(const Rect &other) const;
 };
 
 template <typename Container, typename LocationIt>
-inline void shuffleToFront(Container& container, LocationIt location) {
+inline void shuffleToFront(Container &container, LocationIt location) {
   auto element = std::move(*location);
   container.erase(location);
   container.insert(container.begin(), std::move(element));
@@ -23,4 +23,4 @@ inline bool contains(const std::string_view haystack,
   return std::string_view::npos != haystack.find(needle);
 }
 
-void die(const char* fmt, ...);
+void die(const char *fmt, ...);

@@ -1,0 +1,6 @@
+{
+  "mesonbuild.configureOnOpen": true,
+  "FSharp.suggestGitignore": false,
+  "C_Cpp.default.compileCommands": "/home/hashem/Workspace/ezdwm/builddir/compile_commands.json",
+  "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild"
+}

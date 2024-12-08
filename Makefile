@@ -28,13 +28,13 @@ WARNINGS = -Wall -Wpedantic -Wextra -Wno-deprecated-declarations
 MACROS   = -DVERSION=\"$(VERSION)\" -D_DEFAULT_SOURCE $(XINERAMAFLAG)
 
 # Includes and Libs
-INCS = $(X11INC) $(FREETYPEINC) -Iinc/
+INCS = $(X11INC) $(FREETYPEINC) -Iinclude/
 LIBS = $(X11LIB) $(FREETYPELIB) $(XINERAMALIBS)
 
 # Define the build, source and include directories
 BUILD_DIR = build
 SRC_DIR = src
-INC_DIR = inc
+INC_DIR = include
 
 # List of C++ source files
 SOURCES = $(wildcard $(SRC_DIR)/*.cpp)

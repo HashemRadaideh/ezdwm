@@ -10,14 +10,14 @@
 
 class CursorFont {
  public:
-  CursorFont(Display*, int shape);
-  CursorFont(CursorFont&&);
+  CursorFont(Display *, int shape);
+  CursorFont(CursorFont &&);
   ~CursorFont();
 
   Cursor getXCursor() const;
 
  private:
-  Display* fDisplay;
+  Display *fDisplay;
   std::optional<Cursor> fCursor;
 };
 
@@ -28,7 +28,7 @@ struct ColorScheme {
 };
 
 struct XColorScheme {
-  XColorScheme(Display*, int screen, const ColorScheme&);
+  XColorScheme(Display *, int screen, const ColorScheme &);
 
   XftColor foreground;
   XftColor background;
@@ -43,9 +43,9 @@ struct Theme {
 
 class DisplayFont {
  public:
-  DisplayFont(Display*, int screen, const char* fontName);
-  DisplayFont(Display*, FcPattern*);
-  DisplayFont(DisplayFont&&);
+  DisplayFont(Display *, int screen, const char *fontName);
+  DisplayFont(Display *, FcPattern *);
+  DisplayFont(DisplayFont &&);
   ~DisplayFont();
 
   bool doesCodepointExistInFont(long utf8Codepoint) const;
@@ -55,31 +55,31 @@ class DisplayFont {
 
   uint getHeight() const;
   uint getTextExtent(std::string_view) const;
-  XftFont* getXFont() const;
+  XftFont *getXFont() const;
 
  private:
   void dieIfFontIsColored() const;
 
-  Display* fDisplay;
-  XftFont* fXfont;
-  FcPattern* fPattern;
+  Display *fDisplay;
+  XftFont *fXfont;
+  FcPattern *fPattern;
 };
 
 class Drw {
  public:
-  Drw(Display* dpy, int screen, Window win, uint w, uint h);
+  Drw(Display *dpy, int screen, Window win, uint w, uint h);
   ~Drw();
 
   void resize(uint w, uint h);
 
-  const std::vector<DisplayFont>& createFontSet(
-      const std::vector<std::string>& fontNames);
+  const std::vector<DisplayFont> &createFontSet(
+      const std::vector<std::string> &fontNames);
 
   uint getPrimaryFontHeight() const;
-  const std::vector<DisplayFont>& getFontset() const;
+  const std::vector<DisplayFont> &getFontset() const;
 
-  Theme<XColorScheme> parseTheme(const Theme<ColorScheme>&) const;
-  void setScheme(const XColorScheme&);
+  Theme<XColorScheme> parseTheme(const Theme<ColorScheme> &) const;
+  void setScheme(const XColorScheme &);
 
   int getTextWidth(std::string_view);
   void renderRect(int x, int y, uint w, uint h, bool filled, bool invert) const;
@@ -90,7 +90,7 @@ class Drw {
 
  private:
   uint fWidth, fHeight;
-  Display* fDisplay;
+  Display *fDisplay;
   int fScreen;
   Window fRoot;
   Drawable fDrawable;
